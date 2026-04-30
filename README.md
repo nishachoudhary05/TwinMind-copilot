@@ -2,7 +2,7 @@
 
 An always-on AI meeting copilot that listens to live audio, transcribes speech in real time, and continuously surfaces 3 contextual suggestions — personalized to the conversation type and the user's background.
 
-**Live Demo:** [twinmind-copilot.vercel.app](https://twinmind-copilot.vercel.app)
+**Live Demo:** [twinmind-copilot-gules.vercel.app](https://twin-mind-copilot-gules.vercel.app/)
 
 ## What It Does
 
