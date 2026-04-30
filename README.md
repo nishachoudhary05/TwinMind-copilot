@@ -6,23 +6,26 @@ An always-on AI meeting copilot that listens to live audio, transcribes speech i
 
 ## What It Does
 
-- 🎙️ **Live transcription** via Groq Whisper Large V3, chunked every 30 seconds
-- 💡 **3 live suggestions** refreshed automatically, each tailored to the meeting context
-- 💬 **Persistent chat panel** for detailed answers and follow-up questions
-- 📋 **Session export** — full transcript + all suggestion batches + chat history as JSON
+- **Live transcription** via Groq Whisper Large V3, chunked every 30 seconds
+- **3 live suggestions** refreshed automatically, each tailored to the meeting context
+- **Persistent chat panel** for detailed answers and follow-up questions
+- **Session export** — full transcript + all suggestion batches + chat history as JSON
 
 ## Stack
 
-| Layer | Choice | Why |
+**Frontend**
+Next.js 15 (App Router) + TypeScript — zero-config Vercel deploy, file-based routing, and strong typing throughout. Tailwind CSS for styling — fast to iterate, no separate CSS files.
 
-| Framework | Next.js 15 (App Router) | Zero-config Vercel deploy, file-based routing, TypeScript out of the box |
-| Styling | Tailwind CSS | Fast iteration, no CSS files to manage |
-| State | Zustand | Lightweight, no boilerplate, persists to localStorage for settings |
-| Transcription | Groq Whisper Large V3 | Fastest available Whisper inference, accurate on conversational speech |
-| AI Model | Groq `openai/gpt-oss-120b` | Required by assignment; strong reasoning, fast inference at 500+ t/s |
-| Hosting | Vercel | One-click deploy from GitHub, zero config for Next.js |
+**State Management**
+Zustand — lightweight with no boilerplate, works outside React components (needed for setState inside async callbacks), and persists settings to localStorage in one line.
 
-All Groq API calls run **client-side** — no backend server, no cold starts, lowest possible latency.
+**AI & Transcription**
+Groq Whisper Large V3 for transcription — fastest available Whisper inference, highly accurate on conversational speech. Groq `openai/gpt-oss-120b` for suggestions and chat — strong reasoning at 500+ tokens/second.
+
+**Hosting**
+Vercel — one-click deploy from GitHub, zero configuration for Next.js projects.
+
+> All Groq API calls run client-side — no backend server, no cold starts, lowest possible latency.
 
 ## Setup
 
@@ -75,15 +78,20 @@ This detection drives which suggestion types are surfaced and how they're framed
 ### Suggestion Types
 Each refresh produces exactly 3 suggestions from these types, varied by context:
 
-| Type | When surfaced |
+**Answer** — A direct question was just asked. Gives a concrete response, using STAR format for behavioral interview questions.
 
-| Answer | A direct question was just asked |
-| Question | User could redirect or deepen the conversation |
-| Talking Point | Relevant insight, stat, or angle not yet raised |
-| Fact Check | A claim was made that warrants verification |
-| Clarification | Something is ambiguous and needs unpacking |
-| Action Item | A commitment or next step was implied |
-| Status Update | Standup context — what was done / what's next |
+**Question to Ask** — The user could redirect, deepen, or clarify the conversation with a sharp follow-up.
+
+**Talking Point** — A relevant insight, stat, or angle that hasn't been raised yet and would add value.
+
+**Fact Check** — A claim was made that warrants verification, nuance, or correction.
+
+**Clarification** — Something is ambiguous or undefined and unpacking it would unlock the conversation.
+
+**Action Item** — A commitment or next step was implied and should be captured explicitly.
+
+**Status Update** — In a standup context, a structured summary of what was done and what's next.
+
 
 ### Context Windows
 - **Suggestions:** Last 2,000 chars as "recent context" + last 4,000 chars as "full context" — keeps the model focused on what was just said while having broader awareness
@@ -133,10 +141,12 @@ Chat streams token-by-token for responsiveness. Suggestions are non-streaming be
 
 All prompts and parameters are editable in the Settings panel at runtime:
 
-| Setting | Default | Purpose |
+**Suggestion Prompt** — Controls meeting type detection and suggestion quality. Edit this to tune how the model picks suggestion types and frames answers.
 
-| Suggestion Prompt | See `lib/types.ts` | Controls meeting detection + suggestion quality |
-| Detailed Answer Prompt | See `lib/types.ts` | Controls click-to-expand response format |
-| Chat Prompt | See `lib/types.ts` | Controls chat panel responses |
-| Suggestion Context Window | 2,000 chars | How much recent transcript to use for suggestions |
-| Chat Context Window | 8,000 chars | How much transcript to use for chat answers |
+**Detailed Answer Prompt** — Controls the structured response shown when a suggestion card is clicked. Includes STAR format instructions for interview scenarios.
+
+**Chat System Prompt** — Controls how the chat panel responds to direct questions and follow-ups.
+
+**Suggestion Context Window** — How many characters of recent transcript to use when generating suggestions. Default: 2,000.
+
+**Chat Context Window** — How many characters of transcript to include as context for chat answers. Default: 8,000.
