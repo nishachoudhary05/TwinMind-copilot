@@ -1,6 +1,6 @@
 # TwinMind Copilot
 
-An always-on AI meeting copilot that listens to live audio, transcribes speech in real time, and continuously surfaces 3 contextual suggestions — personalized to the conversation type and the user's background.
+An always-on AI meeting copilot that listens to live audio, transcribes speech in real time, and continuously surfaces 3 contextual suggestions, personalized to the conversation type and the user's background.
 
 **Live Demo:** [twinmind-copilot-gules.vercel.app](https://twin-mind-copilot-gules.vercel.app/)
 
@@ -14,18 +14,18 @@ An always-on AI meeting copilot that listens to live audio, transcribes speech i
 ## Stack
 
 **Frontend**
-Next.js 15 (App Router) + TypeScript — zero-config Vercel deploy, file-based routing, and strong typing throughout. Tailwind CSS for styling — fast to iterate, no separate CSS files.
+Next.js 15 (App Router) + TypeScript - zero-config Vercel deploy, file-based routing, and strong typing throughout. Tailwind CSS for styling - fast to iterate, no separate CSS files.
 
 **State Management**
-Zustand — lightweight with no boilerplate, works outside React components (needed for setState inside async callbacks), and persists settings to localStorage in one line.
+Zustand - lightweight with no boilerplate, works outside React components (needed for setState inside async callbacks), and persists settings to localStorage in one line.
 
 **AI & Transcription**
-Groq Whisper Large V3 for transcription — fastest available Whisper inference, highly accurate on conversational speech. Groq `openai/gpt-oss-120b` for suggestions and chat — strong reasoning at 500+ tokens/second.
+Groq Whisper Large V3 for transcription - fastest available Whisper inference, highly accurate on conversational speech. Groq `openai/gpt-oss-120b` for suggestions and chat, strong reasoning at 500+ tokens/second.
 
 **Hosting**
-Vercel — one-click deploy from GitHub, zero configuration for Next.js projects.
+Vercel - one-click deploy from GitHub, zero configuration for Next.js projects.
 
-> All Groq API calls run client-side — no backend server, no cold starts, lowest possible latency.
+All Groq API calls run client-side, no backend server, no cold starts, lowest possible latency.
 
 ## Setup
 
@@ -58,7 +58,7 @@ Or connect the GitHub repo at [vercel.com](https://vercel.com) — zero configur
 1. **(Optional but recommended)** Paste your resume or background into the Chat panel first. The AI will use this to personalize suggestions.
 2. Click **Start** to begin recording. Allow microphone access.
 3. Speak naturally. Transcript appears in the left column every ~30 seconds.
-4. **Live suggestions** appear in the middle column — click any card for a detailed answer in the right chat panel.
+4. **Live suggestions** appear in the middle column, click any card for a detailed answer in the right chat panel.
 5. You can also type questions directly into chat at any time.
 6. Click **Export** to download the full session as JSON.
 
@@ -123,13 +123,13 @@ lib/
 ## Tradeoffs & Decisions
 
 **Client-side API calls vs. backend proxy**
-All Groq calls go directly from the browser. This eliminates server cold starts and keeps latency low. The tradeoff is that the API key lives in localStorage — acceptable for a personal tool, not for a multi-user product.
+All Groq calls go directly from the browser. This eliminates server cold starts and keeps latency low. The tradeoff is that the API key lives in localStorage, acceptable for a personal tool, not for a multi-user product.
 
 **30-second audio chunks**
 MediaRecorder stops every 30 seconds, the chunk is sent to Whisper, then suggestions refresh. Shorter chunks (10s) would feel more responsive but increase API calls and cost. 30s is the sweet spot for conversational context.
 
 **No `response_format: json_object`**
-The Groq `openai/gpt-oss-120b` model was unreliable with forced JSON mode — it returned empty responses. Instead, the prompt instructs JSON output and the parser uses regex extraction + partial salvage to handle truncated or wrapped responses gracefully.
+The Groq `openai/gpt-oss-120b` model was unreliable with forced JSON mode, it returned empty responses. Instead, the prompt instructs JSON output and the parser uses regex extraction + partial salvage to handle truncated or wrapped responses gracefully.
 
 **Zustand over Redux/Context**
 No boilerplate, works outside React components (needed for `setState` inside async callbacks), and persists settings to localStorage in one line.
